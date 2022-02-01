@@ -1,0 +1,43 @@
+Package: braidHymo
+Type: Package
+Title: Calculation of hydromorphological indexes for braided rivers (BRI* and W*).
+Version: 0.1.0
+Authors@R: 
+    c(person(given = "Lise",
+             family = "Devreux",
+             role = c("aut")),
+      person(given = "Lise",
+             family = "Vaudor",
+             role = c("aut", "cre"),
+             email = "lise.vaudor@ens-lyon.fr"
+             ),
+      person(given = "Sandrine",
+             family = "Lallias-Tacon",
+             role = "aut"
+             ),
+      person(given="Barbara",
+             family="Belletti",
+             role="ctb"),
+      person(given="Mathieu",
+             family="Cassel",
+             role="ctb"),
+      person(given="Frédéric",
+             family="Liébault",
+             role="ctb"),
+      person(given="Margot",
+             family="Chapuis",
+             role="ctb"))
+Maintainer: Lise Vaudor <lise.vaudor@ens-lyon.fr>
+Description: Calculate hydromorphological indexes BRI* and W* regarding braiding rivers.
+     Ce code peut être utilisé pour appliquer les indices morphométriques suivants (Terrier et al., 2019): le BRI* (Liébault et al., 2013) et le W* (Piégay et al., 2009) sur des données de tronçons en tresses..
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    dplyr,
+    ggplot2
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
+RoxygenNote: 7.1.2
