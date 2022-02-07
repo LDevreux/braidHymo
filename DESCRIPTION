@@ -17,16 +17,16 @@ Authors@R:
              ),
       person(given="Barbara",
              family="Belletti",
-             role="ctb"),
+             role="aut"),
       person(given="Mathieu",
              family="Cassel",
-             role="ctb"),
+             role="aut"),
       person(given="Frédéric",
              family="Liébault",
-             role="ctb"),
+             role="aut"),
       person(given="Margot",
              family="Chapuis",
-             role="ctb"))
+             role="aut"))
 Maintainer: Lise Vaudor <lise.vaudor@ens-lyon.fr>
 Description: Calculate hydromorphological indexes BRI* and W* regarding braiding rivers.
      Ce code peut être utilisé pour appliquer les indices morphométriques suivants (Terrier et al., 2019): le BRI* (Liébault et al., 2013) et le W* (Piégay et al., 2009) sur des données de tronçons en tresses..
