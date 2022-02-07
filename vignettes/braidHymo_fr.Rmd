@@ -3,6 +3,7 @@ title: "package braidHymo (fr)"
 output:
   rmarkdown::html_vignette:
     df_print: kable
+bibliography: braidHymoBib.bib
 vignette: >
   %\VignetteIndexEntry{package braidHymo (fr)}
   %\VignetteEngine{knitr::rmarkdown}
