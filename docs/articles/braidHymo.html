@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,23 +33,29 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">braidHymo</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../articles/braidHymo.html">Get started</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/braidHymo_fr.html">package braidHymo (fr)</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right"></ul>
@@ -60,7 +68,7 @@
 
       
 
-      </header><script src="braidHymo_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>braidHymo package</h1>
@@ -74,138 +82,161 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">braidHymo</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">9999</span>, pillar.sigfig <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></code></pre></div>
-<div id="format-data" class="section level1">
-<h1 class="hasAnchor">
-<a href="#format-data" class="anchor"></a>Format data</h1>
-<p>Several datafiles must be provided <strong>with the following format</strong>:</p>
-<div id="rivdata-as-many-tables-as-there-are-distinct-riversreaches-considered" class="section level2">
-<h2 class="hasAnchor">
-<a href="#rivdata-as-many-tables-as-there-are-distinct-riversreaches-considered" class="anchor"></a>rivdata (as many tables as there are distinct rivers/reaches considered)</h2>
-<p>un tableau contenant une <strong>liste des points</strong> avec, en colonnes :</p>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">braidHymo</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></code></pre></div>
+<div class="section level2">
+<h2 id="data-format">Data format<a class="anchor" aria-label="anchor" href="#data-format"></a>
+</h2>
+<p><strong>One type</strong> (1 x <code>rivdata</code>) or <strong>two types of files</strong> (n x <code>rivdata</code> + <code>rivers</code>) must be provided: see details below.</p>
+<div class="section level3">
+<h3 id="file-rivdata">File <code>rivdata</code><a class="anchor" aria-label="anchor" href="#file-rivdata"></a>
+</h3>
+<p>There must be as many <code>rivdata</code> files as there are rivers considered.</p>
+<p>One <code>rivdata</code> file corresponds to</p>
 <ul>
-<li>le <strong>numéro de point</strong>,</li>
-<li>les <strong>mesures d’altitudes</strong> et</li>
-<li>le <strong>type d’unité paysagère</strong> (eau, ripisylve, îles végétalisées, bancs végétalisés, bancs de sédiments).</li>
+<li>
+<strong>1 row per sampling point</strong> with altitude measurement</li>
+<li>
+<strong>multiple columns</strong>, 2 of which are non-optional and should correspond to:
+<ul>
+<li>a <strong>cross-section ID</strong> for the point (typically named <code>ID</code>)</li>
+<li>an <strong>altitude measure</strong> for the point (typically named <code>RASTERVALU</code>)</li>
 </ul>
-<p>Une différence doit être réalisée entre la végétation pionnière et la végétation mature afin de prendre en compte de la végétation pionnière seulement.</p>
-<p>La catégorie “Eau” doit contenir les chenaux en eau seulement présents dans la banque active, cela n’inclut pas les affluents.</p>
-</div>
-<div id="infos" class="section level2">
-<h2 class="hasAnchor">
-<a href="#infos" class="anchor"></a>Infos</h2>
-<p>Pour traiter de multiples rivières ou tronçons, un <strong>tableau contenant les informations sur les tronçons d’études et leurs bassins versants</strong> est requis. Ce tableau est ici appelé “Infos”.</p>
-<p>Le tableau doit contenir :</p>
-<ul>
-<li>le <strong>nom de la rivière</strong>,</li>
-<li>le <strong>nom du tronçon</strong>,</li>
-<li>l’<strong>année des données</strong>,</li>
-<li>la <strong>superficie du bassin en km^2</strong> et</li>
-<li>le <strong>nom du fichier avec l’extension</strong>
 </li>
 </ul>
-<p>afin de charger automatiquement les fichiers dans la boucle de code et traiter tous les fichiers automatiquement.</p>
-<p>Les fichiers doivent être au format .txt et séparé par ;</p>
+</div>
+<div class="section level3">
+<h3 id="files-rivers-optional">Files <code>rivers</code> (optional)<a class="anchor" aria-label="anchor" href="#files-rivers-optional"></a>
+</h3>
+<p>To calculate the indices on <strong>multiple rivers</strong>, a table <code>rivers</code> containing information about the rivers should be provided.</p>
+<p>The table should contain</p>
+<ul>
+<li>
+<strong>n rows</strong> (as many as there are <code>rivdata</code> filepaths)</li>
+<li>
+<strong>multiple columns</strong>, 3 of which are non-optional and should correspond to:
+<ul>
+<li>the <strong>catchment area</strong> <em>in km²</em> (typically named <code>area</code>)</li>
+<li>the <strong>space between points on each transect</strong> <em>in m</em> (typically named <code>points_space</code>)</li>
+<li>the <strong>path to corresponding <code>rivdata</code> filepath</strong> (typically named <code>filepath</code>)</li>
+</ul>
+</li>
+</ul>
+<p>Other columns might refer to e.g. river name, year, etc.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Infos</span><span class="op">=</span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_excel</a></span><span class="op">(</span><span class="st">"../data-raw/Infos.xlsx"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Year<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">as.factor</a></span><span class="op">(</span><span class="va">Year</span><span class="op">)</span><span class="op">)</span>
-<span class="va">Infos</span>
-<span class="co">#&gt; # A tibble: 2 × 6</span>
-<span class="co">#&gt;   River   Reach     Year   Area Points_space File                      </span>
-<span class="co">#&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;fct&gt; &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;                     </span>
-<span class="co">#&gt; 1 Drac    Chabottes 2018    253            1 Drac_Chabottes_2018.txt   </span>
-<span class="co">#&gt; 2 Durance Brillanne 2017   7850            1 Durance_Brillanne_2017.txt</span></code></pre></div>
+<code class="sourceCode R"><span class="va">rivers</span><span class="op">=</span><span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="st">"../data-raw/rivers.csv"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>filepath<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"../data-raw/"</span>,<span class="va">filepath</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>year<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; <span style="font-weight: bold;">Rows: </span><span style="color: #0000BB;">2</span> <span style="font-weight: bold;">Columns: </span><span style="color: #0000BB;">6</span></span>
+<span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Column specification</span> <span style="color: #00BBBB;">────────────────────────────────────────────────────────</span></span>
+<span class="co">#&gt; <span style="font-weight: bold;">Delimiter:</span> ","</span>
+<span class="co">#&gt; <span style="color: #BB0000;">chr</span> (3): river, reach, filepath</span>
+<span class="co">#&gt; <span style="color: #00BB00;">dbl</span> (3): year, area, points_space</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use <span style="color: #262626; background-color: #DADADA;">`spec()`</span> to retrieve the full column specification for this data.</span>
+<span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Specify the column types or set <span style="color: #262626; background-color: #DADADA;">`show_col_types = FALSE`</span> to quiet this message.</span>
+
+<span class="co"># Display the resulting table:</span>
+<span class="va">rivers</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 6</span></span>
+<span class="co">#&gt;   river   reach     year   area points_space filepath                           </span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Drac    Chabottes 2018    253            1 ../data-raw/Drac_Chabottes_2018.txt</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Durance Brillanne 2017   <span style="text-decoration: underline;">7</span>850            1 ../data-raw/Durance_Brillanne_2017…</span></code></pre></div>
 </div>
 </div>
-<div id="apply-function-braidhymo-to-one-river" class="section level1">
-<h1 class="hasAnchor">
-<a href="#apply-function-braidhymo-to-one-river" class="anchor"></a>Apply function braidHymo() to one river:</h1>
-<div id="read-and-clean-data-with-braidhymo_read" class="section level2">
-<h2 class="hasAnchor">
-<a href="#read-and-clean-data-with-braidhymo_read" class="anchor"></a>Read and clean data with braidHymo_read():</h2>
+<div class="section level2">
+<h2 id="one-river-apply-braidhymo_one">One river: apply braidHymo_one()<a class="anchor" aria-label="anchor" href="#one-river-apply-braidhymo_one"></a>
+</h2>
+<div class="section level3">
+<h3 id="first-read-and-clean-rivdata-with-braidhymo_read">First, read and clean <code>rivdata</code> with braidHymo_read()<a class="anchor" aria-label="anchor" href="#first-read-and-clean-rivdata-with-braidhymo_read"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data_Drac</span><span class="op">=</span><span class="fu"><a href="../reference/braidHymo_read.html">braidHymo_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"../data-raw/"</span>,<span class="va">Infos</span><span class="op">$</span><span class="va">File</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data_Drac</span><span class="op">)</span>
-<span class="co">#&gt;     FID ORIG_FID ID_XS       Z TYPO_VEGE              NAME</span>
-<span class="co">#&gt; 1     0        0   232 1029.83   pioneer vegetated islands</span>
-<span class="co">#&gt; 125 124        1   231 1029.59                       water</span>
-<span class="co">#&gt; 126 125        1   231 1029.59                       water</span>
-<span class="co">#&gt; 127 126        1   231 1029.60                       water</span>
-<span class="co">#&gt; 128 127        1   231 1029.59                       water</span>
-<span class="co">#&gt; 129 128        1   231 1029.59                       water</span></code></pre></div>
+<code class="sourceCode R"><span class="va">data_Drac</span><span class="op">=</span><span class="fu"><a href="../reference/braidHymo_read.html">braidHymo_read</a></span><span class="op">(</span><span class="st">"../data-raw/Drac_Chabottes_2018.txt"</span><span class="op">)</span> 
+
+<span class="co"># Display the first lines of the resulting table:</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">data_Drac</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 2</span></span>
+<span class="co">#&gt;   ID_XS     Z</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>   232 <span style="text-decoration: underline;">1</span>030.</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>   231 <span style="text-decoration: underline;">1</span>030.</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span>   231 <span style="text-decoration: underline;">1</span>030.</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span>   231 <span style="text-decoration: underline;">1</span>030.</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span>   231 <span style="text-decoration: underline;">1</span>030.</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span>   231 <span style="text-decoration: underline;">1</span>030.</span></code></pre></div>
 </div>
-<div id="calculate-indexes-for-one-riverreach-with-braidhymo_one" class="section level2">
-<h2 class="hasAnchor">
-<a href="#calculate-indexes-for-one-riverreach-with-braidhymo_one" class="anchor"></a>calculate indexes for one river/reach with braidHymo_one():</h2>
+<div class="section level3">
+<h3 id="then-calculate-indices-for-this-river-with-braidhymo_one">Then, calculate indices for this river with braidHymo_one():<a class="anchor" aria-label="anchor" href="#then-calculate-indices-for-this-river-with-braidhymo_one"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">result_Drac</span><span class="op">=</span><span class="fu"><a href="../reference/braidHymo_one.html">braidHymo_one</a></span><span class="op">(</span><span class="va">data_Drac</span>,
-                          area<span class="op">=</span><span class="va">Infos</span><span class="op">$</span><span class="va">Area</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,
-                          points_space<span class="op">=</span><span class="va">Infos</span><span class="op">$</span><span class="va">Points_space</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt; Warning in braidHymo_one(data_Drac, area = Infos$Area[1], points_space =</span>
-<span class="co">#&gt; Infos$Points_space[1]): The cross-sections with ID 232 contain only one measure.</span>
-<span class="va">result_Drac</span>
-<span class="co">#&gt; # A tibble: 12 × 6</span>
-<span class="co">#&gt;    Nb_mean_meas XS_onlyone variable type  stat       value</span>
-<span class="co">#&gt;           &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt;</span>
-<span class="co">#&gt;  1        109.4     0.4310 BRI_mean BRI   mean    0.003474</span>
-<span class="co">#&gt;  2        109.4     0.4310 BRI_SD   BRI   SD      0.001875</span>
-<span class="co">#&gt;  3        109.4     0.4310 BRI_min  BRI   min     0.001139</span>
-<span class="co">#&gt;  4        109.4     0.4310 BRI_max  BRI   max     0.01360 </span>
-<span class="co">#&gt;  5        109.4     0.4310 W_mean   W     mean    9.497   </span>
-<span class="co">#&gt;  6        109.4     0.4310 W_SD     W     SD      2.715   </span>
-<span class="co">#&gt;  7        109.4     0.4310 W_min    W     min     0       </span>
-<span class="co">#&gt;  8        109.4     0.4310 W_max    W     max    15.60    </span>
-<span class="co">#&gt;  9        109.4     0.4310 WAC_mean WAC   mean  108.4     </span>
-<span class="co">#&gt; 10        109.4     0.4310 WAC_SD   WAC   SD     30.98    </span>
-<span class="co">#&gt; 11        109.4     0.4310 WAC_min  WAC   min     0       </span>
-<span class="co">#&gt; 12        109.4     0.4310 WAC_max  WAC   max   178</span></code></pre></div>
+                          area<span class="op">=</span><span class="fl">253</span>,
+                          points_space<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
+<span class="co">#&gt; Warning in braidHymo_one(data_Drac, area = 253, points_space = 1): The cross-</span>
+<span class="co">#&gt; sections with ID 232 contain only one measure.</span>
+
+<span class="co"># Display the first lines of the resulting table:</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result_Drac</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 6</span></span>
+<span class="co">#&gt;   Nb_mean_meas XS_onlyone variable type  stat    value</span>
+<span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         109.      0.431 BRI_mean BRI*  mean  0.003<span style="text-decoration: underline;">47</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         109.      0.431 BRI_SD   BRI*  SD    0.001<span style="text-decoration: underline;">87</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span>         109.      0.431 BRI_min  BRI*  min   0.001<span style="text-decoration: underline;">14</span></span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span>         109.      0.431 BRI_max  BRI*  max   0.013<span style="text-decoration: underline;">6</span> </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span>         109.      0.431 W_mean   W*    mean  9.50   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span>         109.      0.431 W_SD     W*    SD    2.71</span></code></pre></div>
 </div>
 </div>
-<div id="apply-to-multiple-riversreaches" class="section level1">
-<h1 class="hasAnchor">
-<a href="#apply-to-multiple-riversreaches" class="anchor"></a>Apply () to multiple rivers/reaches</h1>
+<div class="section level2">
+<h2 id="multiple-rivers-apply-braidhymo">Multiple rivers: apply braidHymo()<a class="anchor" aria-label="anchor" href="#multiple-rivers-apply-braidhymo"></a>
+</h2>
+<p>Here, we generalise this to 2 rivers.</p>
+<p>The function <code><a href="../reference/braidHymo.html">braidHymo()</a></code> retrieves from table <code>rivers</code> all the necessary information about rivers, and paths to rivdata filepaths.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span><span class="op">=</span><span class="fu"><a href="../reference/braidHymo.html">braidHymo</a></span><span class="op">(</span><span class="va">Infos</span>,rel_path<span class="op">=</span><span class="st">"../data-raw/"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">result</span><span class="op">=</span><span class="fu"><a href="../reference/braidHymo.html">braidHymo</a></span><span class="op">(</span><span class="va">rivers</span><span class="op">)</span>
 <span class="co">#&gt; Warning in .f(rivdata = .l[[1L]][[i]], area = .l[[2L]][[i]], points_space</span>
 <span class="co">#&gt; = .l[[3L]][[i]], : The cross-sections with ID 232 contain only one measure.</span>
-<span class="va">result</span>
-<span class="co">#&gt; # A tibble: 24 × 12</span>
-<span class="co">#&gt;    River Reach  Year   Area Points_space File   Nb_mean_meas XS_onlyone variable</span>
-<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt;  &lt;fct&gt; &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 BRI_mean</span>
-<span class="co">#&gt;  2 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 BRI_SD  </span>
-<span class="co">#&gt;  3 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 BRI_min </span>
-<span class="co">#&gt;  4 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 BRI_max </span>
-<span class="co">#&gt;  5 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 W_mean  </span>
-<span class="co">#&gt;  6 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 W_SD    </span>
-<span class="co">#&gt;  7 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 W_min   </span>
-<span class="co">#&gt;  8 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 W_max   </span>
-<span class="co">#&gt;  9 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 WAC_mean</span>
-<span class="co">#&gt; 10 Drac  Chabo… 2018    253            1 ../da…        109.4     0.4310 WAC_SD  </span>
-<span class="co">#&gt; # … with 14 more rows, and 3 more variables: type &lt;chr&gt;, stat &lt;chr&gt;,</span>
-<span class="co">#&gt; #   value &lt;dbl&gt;</span></code></pre></div>
+
+<span class="co"># Display the first lines of the resulting table:</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>
+<span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 12</span></span>
+<span class="co">#&gt;   river reach year   area points_space filepath Nb_mean_meas XS_onlyone variable</span>
+<span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 BRI_mean</span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 BRI_SD  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">3</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 BRI_min </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">4</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 BRI_max </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">5</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 W_mean  </span>
+<span class="co">#&gt; <span style="color: #BCBCBC;">6</span> Drac  Chab… 2018    253            1 ../data…         109.      0.431 W_SD    </span>
+<span class="co">#&gt; <span style="color: #949494;"># … with 3 more variables: type &lt;chr&gt;, stat &lt;chr&gt;, value &lt;dbl&gt;</span></span></code></pre></div>
+<p>It is then possible to graphically display the results for these rivers using function <code><a href="../reference/braidHymo_plot.html">braidHymo_plot()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/braidHymo_plot.html">braidHymo_plot</a></span><span class="op">(</span><span class="va">result</span>,index<span class="op">=</span><span class="st">"BRI"</span>, position<span class="op">=</span><span class="va">Year</span>, color<span class="op">=</span><span class="va">River</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/braidHymo_plot.html">braidHymo_plot</a></span><span class="op">(</span><span class="va">result</span>,index<span class="op">=</span><span class="st">"BRI*"</span>, position<span class="op">=</span><span class="va">year</span>, color<span class="op">=</span><span class="va">river</span><span class="op">)</span></code></pre></div>
 <p><img src="braidHymo_files/figure-html/plot_BRIstar-1.png" width="768"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/braidHymo_plot.html">braidHymo_plot</a></span><span class="op">(</span><span class="va">result</span>,index<span class="op">=</span><span class="st">"W"</span>, position<span class="op">=</span><span class="va">Year</span>, color<span class="op">=</span><span class="va">River</span>, threshold<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/braidHymo_plot.html">braidHymo_plot</a></span><span class="op">(</span><span class="va">result</span>,index<span class="op">=</span><span class="st">"W*"</span>, position<span class="op">=</span><span class="va">year</span>, color<span class="op">=</span><span class="va">river</span><span class="op">)</span></code></pre></div>
 <p><img src="braidHymo_files/figure-html/plot_Wstar-1.png" width="768"></p>
 </div>
-<div id="references" class="section level1">
-<h1 class="hasAnchor">
-<a href="#references" class="anchor"></a>References:</h1>
-<p>When using this package, <strong>please refer to the following article</strong>:</p>
-<p>Devreux, L., Chapuis, M., Belletti, B., submitted. Hydromorphological analysis on restored Alpine braided rivers, <em>Geomorphology</em>.</p>
-<p>See also:</p>
-<ul>
-<li>Liébault, F., Lallias‐Tacon, S., Cassel, M., Talaska, N., 2013. Long Profile Responses of Alpine Braided Rivers in SE France. <em>River Research and Applications</em> 29, 1253–1266. <a href="https://doi.org/10.1002/rra.2615" class="uri">https://doi.org/10.1002/rra.2615</a>
-</li>
-<li>Piégay, H., Alber, A., Slater, L., Bourdin, L., 2009. Census and typology of braided rivers in the French Alps. <em>Aquatic Sciences</em> 71, 371–388. <a href="https://doi.org/10.1007/s00027-009-9220-4" class="uri">https://doi.org/10.1007/s00027-009-9220-4</a>
-</li>
-<li>Terrier, B., Piégay, H., Liébault, F., Dufour, S., Belletti, B., Le Lay, Y.-F., Marmonier, P., Comby, E., Tacon, S., Faton, J.-M., Gourhand, A., Marteau, B., Räpple, B., Wawrzyniak, V., 2019. <em>Les rivières en tresses - Eléments de connaissance (Guide), Eau &amp; Connaissance</em>. Agence de l’eau Rhône Méditerranée Corse.</li>
-</ul>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p><strong>When using this package, please refer to <span class="citation">Devreux et al. (2021)</span>.</strong></p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-lise_devreux_2021_5796184" class="csl-entry">
+Devreux, Lise, Lise Vaudor, Sandrine Lallias-Tacon, Barbara Belletti, Mathieu Cassel, Frédéric Liébault, and Margot Chapuis. 2021. <em><span class="nocase">braidHymo: Morphometric indices for braided rivers.</span></em> (version v1.0.0). Zenodo. <a href="https://doi.org/10.5281/zenodo.5796184" class="external-link">https://doi.org/10.5281/zenodo.5796184</a>.
+</div>
+<div id="ref-liebault_long_2013" class="csl-entry">
+Liébault, F., S. Lallias‐Tacon, M. Cassel, and N. Talaska. 2013. <span>“Long <span>Profile</span> <span>Responses</span> of <span>Alpine</span> <span>Braided</span> <span>Rivers</span> in <span>SE</span> <span>France</span>.”</span> <em>River Research and Applications</em> 29 (10): 1253–66. <a href="https://doi.org/10.1002/rra.2615" class="external-link">https://doi.org/10.1002/rra.2615</a>.
+</div>
+<div id="ref-piegay_census_2009" class="csl-entry">
+Piégay, Hervé, Adrien Alber, Louise Slater, and Laurent Bourdin. 2009. <span>“Census and Typology of Braided Rivers in the <span>French</span> <span>Alps</span>.”</span> <em>Aquatic Sciences</em> 71 (3): 371–88. <a href="https://doi.org/10.1007/s00027-009-9220-4" class="external-link">https://doi.org/10.1007/s00027-009-9220-4</a>.
+</div>
+<div id="ref-terrier_rivieres_2019" class="csl-entry">
+Terrier, Benoît, Hervé Piégay, Frédéric Liébault, Simon Dufour, Barbara Belletti, Yves-François Le Lay, Pierre Marmonier, et al. 2019. <span>“Les Rivières En Tresses - <span>Eléments</span> de Connaissance.”</span> Guide. Agence de l’eau Rhône Méditerranée Corse.
+</div>
+</div>
 </div>
   </div>
 
@@ -220,11 +251,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Lise Devreux, Lise Vaudor, Sandrine Lallias-Tacon.</p>
+  <p></p>
+<p>Developed by Lise Devreux, Lise Vaudor, Sandrine Lallias-Tacon, Barbara Belletti, Mathieu Cassel, Frédéric Liébault, Margot Chapuis.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
@@ -232,6 +265,8 @@
 
   
 
+
+  
 
   </body>
 </html>
