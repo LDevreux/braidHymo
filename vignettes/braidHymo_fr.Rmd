@@ -1,0 +1,119 @@
+---
+title: "package braidHymo (fr)"
+output:
+  rmarkdown::html_vignette:
+    df_print: kable
+vignette: >
+  %\VignetteIndexEntry{package braidHymo (fr)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup, message=FALSE, warning=FALSE}
+library(braidHymo)
+library(dplyr)
+```
+
+# Format des données
+
+**Un** (1 x `rivdata`) ou **deux types de données** (n x `rivdata` + `rivers`) sont utilisés par ce package:
+
+## Fichiers `rivdata`
+
+Il y a autant de fichiers de type `rivdata` que de rivières considérées dans l'analyse.
+
+Un fichier `rivdata` correspond à:
+
+- **1 ligne par point d'échantillonnage** avec mesure d'altitude
+- **plusieurs colonnes**, parmi lesquelles 2 sont non-optionnelles et devraient correspondre à:
+    + un **identifiant de section transverse** pour chaque point d'échantillonnage (nommé, par défaut, `ID`)
+    + une **mesure d'altitude** pour ce point (nommé, par défaut, `RASTERVALU`)
+
+
+## Fichier `rivers` (optionnel)
+
+Pour calculer les indices sur **plusieurs rivières**, il est souhaitable de fournir une table `rivers` contenant diverses informations à propos de ces rivières.
+
+Cette table devrait comprendre:
+
+- **n lignes** (autant qu'il y a de fichiers `rivdata`) 
+- **plusieurs colonnes**, parmi lesquelles 3 sont non-optionnelles et devraient correspondre à:
+    + la **taille du bassin versant** *en km²* (nommée, par défaut, `area`)
+    + l'**espace séparant les points sur les transects** *en m* (nommé, par défaut, `points_space`)
+    + le **chemin vers le fichier `rivdata`** (nommé, par défaut, `filepath`)
+
+Les autres colonnes peuvent faire référence par exemple au nom de la rivière, à l'année d'échantillonnage, etc.
+
+```{r river_info}
+rivers=readr::read_csv("../data-raw/rivers.csv") %>%
+    mutate(filepath=paste0("../data-raw/",filepath)) %>% 
+    mutate(year=as.factor(year))
+
+# Montre le tableau resultant:
+rivers
+```
+
+
+# Une seule rivière: utiliser braidHymo_one()
+
+## En premier lieu, lire et nettoyer les données `rivdata` avec braidHymo_read()
+
+```{r read_drac}
+data_Drac=braidHymo_read("../data-raw/Drac_Chabottes_2018.txt") 
+
+# Montre les premières lignes de la table:
+head(data_Drac)
+```
+
+## Puis calculer les indices pour cette rivière avec `braidHymo_one()`:
+
+```{r calc_drac}
+result_Drac=braidHymo_one(data_Drac,
+                          area=253,
+                          points_space=1)
+
+# Montre les premières lignes de la table:
+head(result_Drac)
+```
+
+# Plusieurs rivières: utiliser `braidHymo()`
+
+Ici, on généralise le processus à 2 rivières.
+
+La fonction `braidHymo()` récupère toute les informations nécessaires à propos des rivières (et notamment le chemin vers les fichiers `rivdata`) depuis la table `rivers`
+
+```{r braidHymo}
+result=braidHymo(rivers)
+
+# Montre les premières lignes de la table
+head(result)
+```
+
+On peut alors comparer graphiquement les résultats des différentes rivières en utilisant la fonction `braidHymo_plot()`:
+
+```{r plot_BRIstar,fig.width=8}
+braidHymo_plot(result,index="BRI*", position=year, color=river)
+```
+
+
+```{r plot_Wstar,fig.width=8}
+braidHymo_plot(result,index="W*", position=year, color=river)
+```
+
+---
+nocite: '@*'
+---
+
+
+# References
+
+
+**When using this package, please refer to @lise_devreux_2021_5796184.**

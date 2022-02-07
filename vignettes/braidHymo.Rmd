@@ -1,6 +1,9 @@
 ---
 title: "braidHymo package"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    df_print: kable
+bibliography: braidHymoBib.bib
 vignette: >
   %\VignetteIndexEntry{braidHymo package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -21,13 +24,13 @@ library(dplyr)
 
 # Data format
 
-**One type** (1 x `rivdata`) or **two types of filepaths** (n x `rivdata` + `rivers`) must be provided: see details below.
+**One type** (1 x `rivdata`) or **two types of files** (n x `rivdata` + `rivers`) must be provided: see details below.
 
-## filepath(s) `rivdata`
+## File `rivdata`
 
-There must be as many `rivdata` filepaths as there are rivers considered.
+There must be as many `rivdata` files as there are rivers considered.
 
-One `rivdata` filepath corresponds to
+One `rivdata` file corresponds to
 
 - **1 row per sampling point** with altitude measurement
 - **multiple columns**, 2 of which are non-optional and should correspond to:
@@ -35,7 +38,7 @@ One `rivdata` filepath corresponds to
     + an **altitude measure** for the point (typically named `RASTERVALU`)
 
 
-## filepath `rivers` (optional)
+## Files `rivers` (optional)
 
 To calculate the indices on **multiple rivers**, a table `rivers` containing information about the rivers should be provided.
 
@@ -53,16 +56,19 @@ Other columns might refer to e.g. river name, year, etc.
 rivers=readr::read_csv("../data-raw/rivers.csv") %>%
     mutate(filepath=paste0("../data-raw/",filepath)) %>% 
     mutate(year=as.factor(year))
+
+# Display the resulting table:
 rivers
 ```
 
 # One river: apply braidHymo_one()
 
-## First, read and clean data with braidHymo_read()
+## First, read and clean `rivdata` with braidHymo_read()
 
 ```{r read_drac}
-rivers$filepath[1]
-data_Drac=braidHymo_read(rivers$filepath[1]) 
+data_Drac=braidHymo_read("../data-raw/Drac_Chabottes_2018.txt") 
+
+# Display the first lines of the resulting table:
 head(data_Drac)
 ```
 
@@ -72,6 +78,8 @@ head(data_Drac)
 result_Drac=braidHymo_one(data_Drac,
                           area=253,
                           points_space=1)
+
+# Display the first lines of the resulting table:
 head(result_Drac)
 ```
 
@@ -83,8 +91,13 @@ The function `braidHymo()` retrieves from table `rivers` all the necessary infor
 
 ```{r braidHymo}
 result=braidHymo(rivers)
-result
+
+# Display the first lines of the resulting table:
+head(result)
 ```
+
+
+It is then possible to graphically display the results for these rivers using function `braidHymo_plot()`:
 
 ```{r plot_BRIstar,fig.width=8}
 braidHymo_plot(result,index="BRI*", position=year, color=river)
@@ -95,15 +108,12 @@ braidHymo_plot(result,index="BRI*", position=year, color=river)
 braidHymo_plot(result,index="W*", position=year, color=river)
 ```
 
+---
+nocite: '@*'
+---
 
-# References:
 
-When using this package, **please refer to the following article**:
+# References
 
-Devreux, L., Chapuis, M., Belletti, B., submitted. Hydromorphological analysis on restored Alpine braided rivers, *Geomorphology*.
 
-See also:
-
-- Liébault, F., Lallias‐Tacon, S., Cassel, M., Talaska, N., 2013. Long Profilepath Responses of Alpine Braided Rivers in SE France. *River Research and Applications* 29, 1253–1266. https://doi.org/10.1002/rra.2615
-- Piégay, H., Alber, A., Slater, L., Bourdin, L., 2009. Census and typology of braided rivers in the French Alps. *Aquatic Sciences* 71, 371–388. https://doi.org/10.1007/s00027-009-9220-4
-- Terrier, B., Piégay, H., Liébault, F., Dufour, S., Belletti, B., Le Lay, Y.-F., Marmonier, P., Comby, E., Tacon, S., Faton, J.-M., Gourhand, A., Marteau, B., Räpple, B., Wawrzyniak, V., 2019. *Les rivières en tresses - Eléments de connaissance (Guide), Eau & Connaissance*. Agence de l’eau Rhône Méditerranée Corse.
+**When using this package, please refer to @lise_devreux_2021_5796184.**
