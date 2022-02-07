@@ -22,8 +22,8 @@ braidHymo_plot=function(tib_morpho_index,index="BRI*",position,color, threshold=
     dplyr::mutate(IC_min=mean-SD,
                   IC_max=mean+SD)
   # Set graphical parameters
-  color=enquo(color)
-  position=enquo(position)
+  color=rlang::enquo(color)
+  position=rlang::enquo(position)
   # Set threshold for braiding
   if(threshold=="default" & index=="BRI*"){threshold=0.004;type="<"}
   if(threshold=="default" & index=="W*"){threshold=10;type=">"}

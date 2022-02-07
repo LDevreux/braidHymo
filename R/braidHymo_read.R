@@ -15,6 +15,7 @@ braidHymo_read=function(file, ID_XS=ID, Z=RASTERVALU, NA.value=-9999, sep=";", r
     dplyr::rename(ID_XS=!!ID,
                   Z=!!Z) %>%
     dplyr::filter(Z!=NA.value) %>%
-    tibble::as_tibble()
+    tibble::as_tibble() %>%
+    dplyr::select(ID_XS,Z)
     return(rivdata)
 }

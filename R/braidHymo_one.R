@@ -25,6 +25,8 @@ braidHymo_one=function(rivdata, area, points_space){
                      BRI=Numerator / ((Nb_measure - 1) * points_space),
                      WAC=(Nb_measure - 1) * points_space,
                      W=WAC / (area ^ 0.44)) %>%
+    # in case there is only one measure for this cross-section,
+    # replace the BRI estimate (which is irrelevant) with a NA
     dplyr::mutate(BRI_norm=dplyr::case_when((Nb_measure==1)~NA_real_,
                                             !(Nb_measure==1)~BRI))
   only_one_measure=tib_XS %>%
